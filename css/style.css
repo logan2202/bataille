@@ -1,0 +1,55 @@
+/*General*/
+
+body {
+    color: white;
+    text-shadow: black 3px 3px 5px;
+    background: url("../img/bg.jpg")
+}
+
+main {
+    background: url("../img/Mano_Logo.jpg") center no-repeat;
+    background-size: cover;
+}
+
+#score{
+    background-color: rgba(44, 42, 42, 0.7);
+}
+.top{
+    margin-top: 60%;
+}
+
+img {
+    width: 200px;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    box-shadow: black 2px 2px 10px;
+}
+
+header {
+    color: white;
+    text-shadow: white 2px 3px 5px;
+    text-align: center;
+}
+
+#batailleP img,
+#batailleC img {
+    width: 50px;
+}
+#btnV{
+    background-color: black;
+    color: white;
+}
+.modal{
+    color: black;
+}
+
+/*test*/
+
+#test1 img,
+#test2 img {
+    width: 200px;
+}
+
+#pioche {
+    visibility: hidden;
+}

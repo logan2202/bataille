@@ -1,0 +1,171 @@
+<HTML>
+<HEAD>
+<TITLE>..:: La Bataille ::.. </TITLE>
+<SCRIPT language="javascript" type="text/javascript">
+
+couleur = new Array("coeur","carreau","trefle","pique");
+nombre = new Array("Deux","Trois","Quartre","Cinq","Six","Sept","Huit","Neuf","Dix","Valet","Dame","roi","As"); 
+bataille_buffer = new Array();
+vous = new Array();
+comp = new Array();
+
+function inidata(){
+carte = new Array();
+inc = 0
+for (i=0;i<13;i++) // Crée les cartes //
+{
+for (x=0;x<4;x++)
+{
+carte[inc] = nombre[i]+"_de_"+couleur[x];
+inc++
+}
+}
+
+for (i=0;i<52;i++) // Brasse les cartes (je me suis baser sur le trie bulle ,mais au lieu de comparer avec les valeurs ,j'ai comparer avec deux nombres al�atoires)//
+{
+for (x=0;x<52;x++)
+{
+if (Math.random() < Math.random())
+{
+temp = carte[i];
+carte[i] = carte[x];
+carte[x] = temp;
+}
+}
+}
+
+for (i=0;i<26;i++)// Sépare le paquet en deux //
+{
+vous[i] = carte[i];
+}
+for (i=26;i<52;i++)
+{
+comp[i-26] = carte[i];
+}
+refresh_all(); // Affiche le nombre de carte de chacun //
+next_click(); // Vérifie qui a gagne et effectue ce qu'il faut //
+
+}
+function refresh_all()
+{
+document.getElementById("comp_pointage").innerHTML  = "Nbre de carte : "+comp.length;//+" : "+comp;
+document.getElementById("vous_pointage").innerHTML  = "Nbre de carte : "+vous.length;//+" : "+vous;
+//temp_v = vous[0].replace("_"," ").replace("_"," ");
+//temp_c = comp[0].replace("_"," ").replace("_"," ");
+document.getElementById("comp").innerHTML  = "<IMG src='"+comp[0]+".png'><IMG src='backcartebleue.png'  width='90' heigth='90'>";
+document.getElementById("vous").innerHTML = "<IMG src='"+vous[0]+".png'><IMG src='backcarte.png' width='90' heigth='90'>";
+}
+function next_click()
+{
+if (vous.length==0) // Vérifie si quelqu'un perdu //
+{
+alert("Vous avez perdu !!!");
+window.location.reload();
+}
+if (comp.length==0)
+{
+alert("Vous avez gagnez !!!");
+window.location.reload();
+}
+
+refresh_all();// Affiche le nombre de carte de chacun //
+c_carte = comp[0].substring(0,comp[0].indexOf("_")); // Trouve l'index des cartes dans le tableau pour ensuite déterminer laquelle est meilleur//
+v_carte = vous[0].substring(0,vous[0].indexOf("_"));
+c_index = false;
+v_index = false;
+
+for (i=0;i<13;i++)
+{
+v_index = (v_carte != nombre[i] && isFinite(v_index)) ? v_index : i;
+c_index = (c_carte != nombre[i] && isFinite(c_index)) ? c_index : i;
+}
+
+if (v_index > c_index) // Vérifie qui a gagne //
+{
+temp_c = comp[0].replace("_"," ").replace("_"," ");
+document.getElementById("message").innerHTML = "Vous gagnez un "+temp_c+" .";
+vous.push(vous[0]);// Ajoute  la carte de l'ordinateur et la votre à la fin //
+vous.push(comp[0]);
+comp.shift(); // Enlève les cartes du début //
+vous.shift();
+}
+if (v_index < c_index)
+{
+temp_v = vous[0].replace("_"," ").replace("_"," ");
+document.getElementById("message").innerHTML = "Vous perdez un "+temp_v+" .";
+comp.push(vous[0]);// Ajoute  la carte de l'ordinateur et la votre à la fin //
+comp.push(comp[0]);
+comp.shift(); // Enlève les cartes du début //
+vous.shift();
+}
+if (v_index == c_index) // C'est une bataille !!!//
+{
+document.getElementById("message").innerHTML = "BATAILLE !!!<BR>";
+i=1;
+while (i=1000) // Fait une boucle jusqu'à temps qu'il y ait un break
+{
+if (vous.length != 0 && comp.length !=0)// S'il ne reste plus de carte à quelqu'un il ne peut continuer //
+{
+bataille_buffer.push(vous[0]); // Ajouter les cartes de chaque joueur aux cartes accumulées durant la bataille //
+bataille_buffer.push(comp[0]);
+vous.shift(); // Enlève les cartes ajoutées //
+comp.shift();
+if (vous[0].substring(0,vous[0].indexOf("_")) == bataille_buffer[0].substring(0,bataille_buffer[0].indexOf("_"))) // Vérifie si la carte qu'il y a sur le dessus est la m�me que celle qui a commencer la bataille //
+{
+document.getElementById("message").innerHTML += "Vous avez gagné "+bataille_buffer.length/2+ " cartes.";
+for (x=0;x<bataille_buffer.length;x++) // Ajoute le cartes accumulées à la fin de vos cartes //
+{
+vous.push(bataille_buffer[x]);
+}
+bataille_buffer = new Array(); // Efface les cartes accumlées durant la bataille //
+break;
+}
+if (comp[0].substring(0,comp[0].indexOf("_")) == bataille_buffer[0].substring(0,bataille_buffer[0].indexOf("_"))) // Même chose pour l'ordinateur //
+{
+document.getElementById("message").innerHTML += "L'ordinateur a gagné "+bataille_buffer.length/2+ " cartes.";
+for (x=0;x<bataille_buffer.length;x++)
+{
+comp.push(bataille_buffer[x]);
+}
+bataille_buffer = new Array();
+break;
+}
+}
+else // Si quelqu'un  n'a plus de carte //
+{
+break;
+}
+i++
+}
+}
+
+if (vous.length == 0){ // Vérifie si quelqu'un a perdu //
+alert("Vous avez perdu !");
+window.location.reload();
+}
+
+if (comp.length == 0){
+alert("Vous avez gagné ! ");
+
+window.location.reload();
+}
+
+document.getElementById("comp_pointage").innerHTML  = "Nbre de carte : "+comp.length;//+" : "+comp;
+document.getElementById("vous_pointage").innerHTML  = "Nbre de carte : "+vous.length;//+" : "+vous;
+
+}
+
+</SCRIPT>
+</HEAD>
+<BODY onload="inidata()">
+Ordinateur : <DIV id="comp"></DIV>
+<DIV id="comp_pointage"></DIV>
+<BR>
+Vous : <DIV id="vous"></DIV>
+<DIV id="vous_pointage"></DIV>
+<BR>
+<DIV id="message"></DIV>
+<BR>
+<INPUT type="button" value="Continuer" onclick="next_click()">
+</BODY>
+</HTML>
